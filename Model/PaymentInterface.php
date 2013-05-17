@@ -15,9 +15,18 @@ namespace Sylius\Bundle\PaymentsBundle\Model;
  * Single payment interface.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Dylan Johnson <eponymi.dev@gmail.com>
  */
 interface PaymentInterface
 {
+    const STATE_CHECKOUT   = 1;
+    const STATE_PROCESSING = 2;
+    const STATE_PENDING    = 3;
+    const STATE_COMPLETED  = 4;
+    const STATE_FAILED     = 5;
+    const STATE_NEW        = 6;
+    const STATE_VOID       = 7;
+
     /**
      * Get payments identifier.
      *
@@ -87,34 +96,48 @@ interface PaymentInterface
      * @return integer
      */
     public function getBalance();
+    
+    /**
+     * Get parent for this payment.
+     *
+     * @return PaymentInterface
+     */
+    public function getParent();
+    
+    /**
+     * Set parent for this payment.
+     *
+     * @return PaymentInterface
+     */
+    public function setParent(PaymentInterface $parent = null);
 
     /**
-     * Get all transactions for this payment.
+     * Get all child payments for this payment.
      *
      * @return Collection
      */
-    public function getTransactions();
+    public function getChildren();
 
     /**
-     * Add transaction to payment.
+     * Add child payment to payment.
+     *
+     * @param PaymentInterface
+     */
+    public function addChild(PaymentInterface $child);
+
+    /**
+     * Remove child payment from payment.
      *
      * @param TransactionInterface
      */
-    public function addTransaction(TransactionInterface $transaction);
+    public function removeChild(PaymentInterface $child);
 
     /**
-     * Remove transaction from payment.
-     *
-     * @param TransactionInterface
-     */
-    public function removeTransaction(TransactionInterface $transaction);
-
-    /**
-     * Has transaction?
+     * Has children?
      *
      * @return Boolean
      */
-    public function hasTransaction(TransactionInterface $transaction);
+    public function hasChild(PaymentInterface $child);
 
     /**
      * Get creation time.

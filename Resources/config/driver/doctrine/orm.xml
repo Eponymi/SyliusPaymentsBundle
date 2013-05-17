@@ -24,9 +24,6 @@
         <parameter key="sylius.model.payment.class">Sylius\Bundle\PaymentsBundle\Entity\Payment</parameter>
         <parameter key="sylius.repository.payment.class">Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository</parameter>
 
-        <parameter key="sylius.model.transaction.class">Sylius\Bundle\PaymentsBundle\Entity\Transaction</parameter>
-        <parameter key="sylius.repository.transaction.class">Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository</parameter>
-
         <parameter key="sylius.model.credit_card.class">Sylius\Bundle\PaymentsBundle\Entity\CreditCard</parameter>
         <parameter key="sylius.repository.credit_card.class">Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository</parameter>
     </parameters>
@@ -56,20 +53,6 @@
                     class="Doctrine\ORM\Mapping\ClassMetadata"
                 >
                     <argument>%sylius.model.payment.class%</argument>
-                </service>
-            </argument>
-        </service>
-
-        <service id="sylius.manager.transaction" alias="doctrine.orm.entity_manager" />
-        <service id="sylius.repository.transaction" class="%sylius.repository.transaction.class%">
-            <argument type="service" id="sylius.manager.transaction" />
-            <argument type="service">
-                <service
-                    factory-service="sylius.manager.transaction"
-                    factory-method="getClassMetadata"
-                    class="Doctrine\ORM\Mapping\ClassMetadata"
-                >
-                    <argument>%sylius.model.transaction.class%</argument>
                 </service>
             </argument>
         </service>

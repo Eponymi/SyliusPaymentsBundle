@@ -23,15 +23,14 @@
         </many-to-one>
         <field name="currency" column="currency" type="string" />
         <field name="amount" column="amount" type="integer" />
-        <one-to-many field="transactions" target-entity="Sylius\Bundle\PaymentsBundle\Model\TransactionInterface" mapped-by="payment" orphan-removal="true">
-            <cascade>
-                <cascade-all/>
-            </cascade>
-        </one-to-many>
+        <one-to-many field="children" target-entity="Sylius\Bundle\PaymentsBundle\Entity\Payment" mapped-by="parent" />
+        <many-to-one field="parent" target-entity="Sylius\Bundle\PaymentsBundle\Entity\Payment" inversed-by="children" nullable="true" on-delete="SET NULL" />
 
         <many-to-one field="creditCard" target-entity="Sylius\Bundle\PaymentsBundle\Model\CreditCardInterface">
             <join-column name="credit_card_id" referenced-column-name="id" nullable="true" on-delete="SET NULL" />
         </many-to-one>
+        
+        <one-to-many field="ledger_entries" target-entity="Sylius\Bundle\PaymentsBundle\Entity\LedgerEntries" mapped-by="payment" />
 
         <field name="createdAt" column="created_at" type="datetime">
             <gedmo:timestampable on="create"/>

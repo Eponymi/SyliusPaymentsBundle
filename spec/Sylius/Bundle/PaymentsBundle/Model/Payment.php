@@ -96,16 +96,16 @@ class Payment extends ObjectBehavior
     }
 
     /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\TransactionInterface $transactionA
-     * @param Sylius\Bundle\PaymentsBundle\Model\TransactionInterface $transactionB
+     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentInterface $childA
+     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentInterface $childB
      */
-    function it_calculates_balance_by_subtracting_transacttions_total_from_amount($transactionA, $transactionB)
+    function it_calculates_balance_by_subtracting_children_total_from_amount($childA, $childB)
     {
-        $transactionA->getAmount()->willReturn(5000);
-        $transactionB->getAmount()->willReturn(2500);
+        $childA->getAmount()->willReturn(5000);
+        $childB->getAmount()->willReturn(2500);
 
-        $this->addTransaction($transactionA);
-        $this->addTransaction($transactionB);
+        $this->addChild($childA);
+        $this->addChild($childB);
 
         $this->setAmount(7500);
         $this->getBalance()->shouldReturn(0);
@@ -116,34 +116,34 @@ class Payment extends ObjectBehavior
 
     function it_initializes_transaction_collection_by_default()
     {
-        $this->getTransactions()->shouldHaveType('Doctrine\Common\Collections\Collection');
+        $this->getChildren()->shouldHaveType('Doctrine\Common\Collections\Collection');
     }
 
     /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\TransactionInterface $transaction
+     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentInterface $child
      */
-    function it_adds_transactions($transaction)
+    function it_adds_children($child)
     {
-        $this->hasTransaction($transaction)->shouldReturn(false);
+        $this->hasChild($child)->shouldReturn(false);
 
-        $transaction->setPayment($this)->shouldBeCalled();
-        $this->addTransaction($transaction);
+        $child->setParent($this)->shouldBeCalled();
+        $this->addChild($child);
 
-        $this->hasTransaction($transaction)->shouldReturn(true);
+        $this->hasChild($child)->shouldReturn(true);
     }
 
     /**
-     * @param Sylius\Bundle\PaymentsBundle\Model\TransactionInterface $transaction
+     * @param Sylius\Bundle\PaymentsBundle\Model\PaymentInterface $child
      */
-    function it_removes_transactions($transaction)
+    function it_removes_children($child)
     {
-        $transaction->setPayment($this)->shouldBeCalled();
-        $this->addTransaction($transaction);
+        $child->setParent($this)->shouldBeCalled();
+        $this->addChild($child);
 
-        $transaction->setPayment(null)->shouldBeCalled();
-        $this->removeTransaction($transaction);
+        $child->setParent(null)->shouldBeCalled();
+        $this->removeChild($child);
 
-        $this->hasTransaction($transaction)->shouldReturn(false);
+        $this->hasChild($child)->shouldReturn(false);
     }
 
     function it_initializes_creation_date_by_default()

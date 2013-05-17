@@ -17,6 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Payments model.
  *
  * @author Paweł Jędrzejewski <pjedrzejewski@diweb.pl>
+ * @author Dylan Johnson <eponymi.dev@gmail.com>
  */
 class Payment implements PaymentInterface
 {
@@ -49,11 +50,18 @@ class Payment implements PaymentInterface
     protected $amount;
 
     /**
-     * Transactions.
+     * Children.
      *
      * @var Collection
      */
-    protected $transactions;
+    protected $children;
+    
+    /**
+     * Parent.
+     *
+     * @var Payment
+     */
+    protected $parent;
 
     /**
      * Credit card as a source.
@@ -82,7 +90,7 @@ class Payment implements PaymentInterface
     public function __construct()
     {
         $this->amount = 0;
-        $this->transactions = new ArrayCollection();
+        $this->children = new ArrayCollection();
         $this->createdAt = new \DateTime('now');
     }
 
@@ -149,44 +157,55 @@ class Payment implements PaymentInterface
 
       return $this;
     }
-
-    public function addTransaction(TransactionInterface $transaction)
+    
+    public function getParent(){
+      return $this->parent;
+    }
+    
+    public function setParent(PaymentInterface $parent = null)
     {
-      if (!$this->hasTransaction($transaction)) {
-        $transaction->setPayment($this);
-        $this->transactions->add($transaction);
-      }
-
+      $this->parent = $parent;
+      
       return $this;
     }
 
-    public function getTransactions()
+    public function getChildren()
     {
-        return $this->transactions;
+        return $this->children;
     }
 
-    public function hasTransaction(TransactionInterface $transaction)
+    public function hasChild(PaymentInterface $child)
     {
-        return $this->transactions->contains($transaction);
+        return $this->children->contains($child);
+    }
+    
+    public function removeChild(PaymentInterface $child)
+    {
+        if ($this->hasChild($child)) {
+            $child->setParent(null);
+            $this->children->removeElement($child);
+        }
+    }
+    
+    public function addChild(PaymentInterface $child)
+    {
+      if (!$this->hasChild($child)) {
+        $child->setParent($this);
+        $this->children->add($child);
+      }
+
+      return $this;
     }
 
     public function getBalance()
     {
         $total = 0;
 
-        foreach ($this->transactions as $transaction) {
-            $total += $transaction->getAmount();
+        foreach ($this->children as $payment) {
+            $total += $payment->getAmount();
         }
 
         return $this->amount - $total;
-    }
-
-    public function removeTransaction(TransactionInterface $transaction)
-    {
-        if ($this->hasTransaction($transaction)) {
-            $transaction->setPayment(null);
-            $this->transactions->removeElement($transaction);
-        }
     }
 
     /**

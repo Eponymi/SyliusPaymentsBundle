@@ -51,6 +51,9 @@ class PaymentType extends AbstractType
             ->add('amount', 'sylius_money', array(
                 'label' => 'sylius.form.payment.amount'
             ))
+            ->add('creditCard', 'sylius_payment_credit_card', array(
+                'label' => 'sylius.form.payment.credit_card'
+            ))
         ;
     }
 

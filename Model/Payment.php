@@ -90,6 +90,7 @@ class Payment implements PaymentInterface
     public function __construct()
     {
         $this->amount = 0;
+        $this->state = PaymentInterface::STATE_NEW;
         $this->children = new ArrayCollection();
         $this->createdAt = new \DateTime('now');
     }

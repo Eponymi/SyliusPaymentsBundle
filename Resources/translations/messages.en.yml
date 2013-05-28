@@ -8,6 +8,8 @@ sylius:
             description: Description
             gateway: Gateway
             enabled: Enabled?
+        payment:
+            credit_card: "Credit Card"
         credit_card:
             cardholder_name: "Cardholer Name"
             number: "Card Number"

@@ -8,20 +8,20 @@ class TransportCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('acme_mailer.transport_chain')) {
+        if (!$container->hasDefinition('sylius.gateway_chain')) {
             return;
         }
 
         $definition = $container->getDefinition(
-            'acme_mailer.transport_chain'
+            'sylius.gateway_chain'
         );
 
         $taggedServices = $container->findTaggedServiceIds(
-            'acme_mailer.transport'
+            'sylius.gateway'
         );
         foreach ($taggedServices as $id => $attributes) {
             $definition->addMethodCall(
-                'addTransport',
+                'addGateway',
                 array(new Reference($id))
             );
         }
